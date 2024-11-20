@@ -1,3 +1,5 @@
+![image info](logo.jpeg)
+
 # Terraform-aws-target-group-monitor
 
 Terraform-aws-tg-monitor is a Terraform module for setting up a notification system about cloudwatch metrics.
@@ -15,17 +17,31 @@ Include this repository as a module in your existing terraform code:
 
 ```python
 
-provider "aws" {
-  region = var.aws_region
-  }
-
 ################################################################################
 # AWS TG-MONITOR
 ################################################################################
 
+provider "aws" {
+  region = "eu-west-1"
+}
+
+resource "aws_sns_topic" "sns_topic" {
+  name         = "sns"
+  display_name = "sns"
+}
+
+resource "aws_sns_topic_subscription" "sns_subscription" {
+  confirmation_timeout_in_minutes = 1
+  endpoint_auto_confirms          = false
+  topic_arn                       = aws_sns_topic.sns_topic.arn
+  protocol                        = "https"
+  endpoint                        = "https://api.sns.com/v1/xxx"
+  depends_on                      = [aws_sns_topic.sns_topic]
+}
 
 module "target_group" {
-  source = "../"
+  source = "delivops/tg-alerts/aws"
+  #version            = "0.0.1"
 
   target_group_name      = "targetgroup/k8s-vops-vopsapia-667ca6b156/xxx"
   target_group_threshold = 1
@@ -33,23 +49,24 @@ module "target_group" {
     Environment = "dev"
   }
   load_balancer_name = "app/k8s-vops-7a822ebbb8/xxx"
-  aws_sns_topic_arn  = aws_sns_topic.opsgenie_topic.arn
+  aws_sns_topic_arn  = aws_sns_topic.sns_topic.arn
 }
 
 ```
 
 <!-- BEGIN_TF_DOCS -->
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.67.0 |
+| Name                                                   | Version   |
+| ------------------------------------------------------ | --------- |
+| <a name="requirement_aws"></a> [aws](#requirement_aws) | >= 4.67.0 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.67.0 |
+| Name                                             | Version   |
+| ------------------------------------------------ | --------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | >= 4.67.0 |
 
 ## Modules
 
@@ -57,21 +74,22 @@ No modules.
 
 ## Resources
 
-| Name | Type |
-|------|------|
+| Name                                                                                                                                            | Type     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | [aws_cloudwatch_metric_alarm.health_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_aws_sns_topic_arn"></a> [aws\_sns\_topic\_arn](#input\_aws\_sns\_topic\_arn) | ARN of the SNS topic | `string` | n/a | yes |
-| <a name="input_load_balancer_name"></a> [load\_balancer\_name](#input\_load\_balancer\_name) | Name of the load balancer | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to the resources | `map(string)` | `{}` | no |
-| <a name="input_target_group_name"></a> [target\_group\_name](#input\_target\_group\_name) | Name of the target group | `string` | n/a | yes |
-| <a name="input_target_group_threshold"></a> [target\_group\_threshold](#input\_target\_group\_threshold) | Target group threshold | `number` | n/a | yes |
+| Name                                                                                                | Description                    | Type          | Default | Required |
+| --------------------------------------------------------------------------------------------------- | ------------------------------ | ------------- | ------- | :------: |
+| <a name="input_aws_sns_topic_arn"></a> [aws_sns_topic_arn](#input_aws_sns_topic_arn)                | ARN of the SNS topic           | `string`      | n/a     |   yes    |
+| <a name="input_load_balancer_name"></a> [load_balancer_name](#input_load_balancer_name)             | Name of the load balancer      | `string`      | n/a     |   yes    |
+| <a name="input_tags"></a> [tags](#input_tags)                                                       | Tags to apply to the resources | `map(string)` | `{}`    |    no    |
+| <a name="input_target_group_name"></a> [target_group_name](#input_target_group_name)                | Name of the target group       | `string`      | n/a     |   yes    |
+| <a name="input_target_group_threshold"></a> [target_group_threshold](#input_target_group_threshold) | Target group threshold         | `number`      | n/a     |   yes    |
 
 ## Outputs
 
 No outputs.
+
 <!-- END_TF_DOCS -->

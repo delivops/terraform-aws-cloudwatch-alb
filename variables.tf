@@ -10,16 +10,16 @@ variable "target_group_threshold" {
 variable "tags" {
   description = "Tags to apply to the resources"
   type        = map(string)
-  default = {}
+  default     = {}
 }
 variable "load_balancer_name" {
   description = "Name of the load balancer"
   type        = string
-  
+
 }
 variable "aws_sns_topic_arn" {
   description = "ARN of the SNS topic"
-  type        = string  
-  
+  type        = string
+
 }
 
