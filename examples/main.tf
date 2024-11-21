@@ -16,15 +16,24 @@ resource "aws_sns_topic_subscription" "sns_subscription" {
   depends_on                      = [aws_sns_topic.sns_topic]
 }
 
-module "target_group" {
+data "aws_lb_target_group" "load_balancer_tg" {
+  arn  = var.lb_tg_arn
+  name = "my-load-balancer-tg"
+}
+data "aws_lb" "load_balancer" {
+  arn  = var.lb_arn
+  name = "my-load-balancer"
+}
+
+module "target_group_alerts" {
   source = "delivops/tg-alerts/aws"
   #version            = "0.0.1"
 
-  target_group_name      = "targetgroup/k8s-vops-vopsapia-667ca6b156/xxx"
+  target_group_name      = data.aws_lb_target_group.load_balancer_tg.name
   target_group_threshold = 1
   tags = {
     Environment = "dev"
   }
-  load_balancer_name = "app/k8s-vops-7a822ebbb8/xxx"
+  load_balancer_name = data.aws_lb.load_balancer.name
   aws_sns_topic_arn  = aws_sns_topic.sns_topic.arn
 }
