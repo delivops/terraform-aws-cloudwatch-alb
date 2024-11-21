@@ -30,7 +30,7 @@ module "target_group_alerts" {
   #version            = "0.0.1"
 
   target_group_name      = data.aws_lb_target_group.load_balancer_tg.name
-  target_group_threshold = 1
+  health_count_threshold = 1
   tags = {
     Environment = "dev"
   }

@@ -2,8 +2,8 @@ variable "target_group_name" {
   description = "Name of the target group"
   type        = string
 }
-variable "target_group_threshold" {
-  description = "Target group threshold"
+variable "health_count_threshold" {
+  description = "Health count threshold"
   type        = number
 
 }

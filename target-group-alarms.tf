@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "health_alarm" {
   namespace                 = "AWS/ApplicationELB"
   period                    = "300"
   statistic                 = "Average"
-  threshold                 = var.target_group_threshold
+  threshold                 = var.health_count_threshold
   alarm_description         = "Health target group in ${var.target_group_name} is unhealthy"
   alarm_actions             = [var.aws_sns_topic_arn]
   ok_actions                = [var.aws_sns_topic_arn]
