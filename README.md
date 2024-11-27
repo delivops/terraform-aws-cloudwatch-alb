@@ -54,18 +54,17 @@ module "target_group_alerts" {
 ```
 
 <!-- BEGIN_TF_DOCS -->
-
 ## Requirements
 
-| Name                                                   | Version   |
-| ------------------------------------------------------ | --------- |
-| <a name="requirement_aws"></a> [aws](#requirement_aws) | >= 4.67.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.67.0 |
 
 ## Providers
 
-| Name                                             | Version   |
-| ------------------------------------------------ | --------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | >= 4.67.0 |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.67.0 |
 
 ## Modules
 
@@ -73,22 +72,25 @@ No modules.
 
 ## Resources
 
-| Name                                                                                                                                            | Type     |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| [aws_cloudwatch_metric_alarm.health_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| Name | Type |
+|------|------|
+| [aws_cloudwatch_metric_alarm.error_rate_4xx_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| [aws_cloudwatch_metric_alarm.error_rate_5xx_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| [aws_cloudwatch_metric_alarm.health_host_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| [aws_lb_target_group.target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb_target_group) | data source |
 
 ## Inputs
 
-| Name                                                                                                | Description                    | Type          | Default | Required |
-| --------------------------------------------------------------------------------------------------- | ------------------------------ | ------------- | ------- | :------: |
-| <a name="input_aws_sns_topic_arn"></a> [aws_sns_topic_arn](#input_aws_sns_topic_arn)                | ARN of the SNS topic           | `string`      | n/a     |   yes    |
-| <a name="input_load_balancer_name"></a> [load_balancer_name](#input_load_balancer_name)             | Name of the load balancer      | `string`      | n/a     |   yes    |
-| <a name="input_tags"></a> [tags](#input_tags)                                                       | Tags to apply to the resources | `map(string)` | `{}`    |    no    |
-| <a name="input_target_group_name"></a> [target_group_name](#input_target_group_name)                | Name of the target group       | `string`      | n/a     |   yes    |
-| <a name="input_health_count_threshold"></a> [health_count_threshold](#input_health_count_threshold) | Target group threshold         | `number`      | n/a     |   yes    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_aws_sns_topic_arn"></a> [aws\_sns\_topic\_arn](#input\_aws\_sns\_topic\_arn) | ARN of the SNS topic | `list(string)` | n/a | yes |
+| <a name="input_error_rate_4XX_threshold"></a> [error\_rate\_4XX\_threshold](#input\_error\_rate\_4XX\_threshold) | Threshold for 4XX error rate | `number` | `8` | no |
+| <a name="input_error_rate_5XX_threshold"></a> [error\_rate\_5XX\_threshold](#input\_error\_rate\_5XX\_threshold) | Threshold for 5XX error rate | `number` | `8` | no |
+| <a name="input_minimum_health_hosts"></a> [minimum\_health\_hosts](#input\_minimum\_health\_hosts) | Minimum number of healthy hosts | `number` | `1` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to the resources | `map(string)` | `{}` | no |
+| <a name="input_unique_tags"></a> [unique\_tags](#input\_unique\_tags) | Unique tags that helps to find the resources | `map(string)` | n/a | yes |
 
 ## Outputs
 
 No outputs.
-
 <!-- END_TF_DOCS -->
