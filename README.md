@@ -19,7 +19,7 @@ Use this module multiple times to create repositories with different configurati
 
 Include this repository as a module in your existing terraform code:
 
-```python
+```python 
 
 ################################################################################
 # AWS TG-MONITOR
