@@ -83,7 +83,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_sns_topic_arn"></a> [aws\_sns\_topic\_arn](#input\_aws\_sns\_topic\_arn) | ARN of the SNS topic | `list(string)` | n/a | yes |
+| <a name="input_aws_sns_topics_arns"></a> [aws\_sns\_topics\_arns](#input\_aws\_sns\_topics\_arns) | ARN of the SNS topic | `list(string)` | n/a | yes |
 | <a name="input_error_rate_4XX_threshold"></a> [error\_rate\_4XX\_threshold](#input\_error\_rate\_4XX\_threshold) | Threshold for 4XX error rate | `number` | `8` | no |
 | <a name="input_error_rate_5XX_threshold"></a> [error\_rate\_5XX\_threshold](#input\_error\_rate\_5XX\_threshold) | Threshold for 5XX error rate | `number` | `8` | no |
 | <a name="input_minimum_health_hosts"></a> [minimum\_health\_hosts](#input\_minimum\_health\_hosts) | Minimum number of healthy hosts | `number` | `1` | no |
