@@ -12,7 +12,7 @@ variable "unique_tags" {
   description = "Unique tags that helps to find the resources"
   type        = map(string)
 }
-variable "aws_sns_topic_arn" {
+variable "aws_sns_topics_arns" {
   description = "ARN of the SNS topic"
   type        = list(string)
 }

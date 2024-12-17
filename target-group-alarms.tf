@@ -5,10 +5,11 @@ data "aws_lb_target_group" "target_group" {
 resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
   alarm_name                = "TG| ${data.aws_lb_target_group.target_group.name} | Unhealthy Hosts"
   comparison_operator       = "LessThanThreshold"
-  evaluation_periods        = "12"
+  evaluation_periods        = 3
+  datapoints_to_alarm       = 3
   metric_name               = "HealthyHostCount"
   namespace                 = "AWS/ApplicationELB"
-  period                    = "300"
+  period                    = 600
   statistic                 = "Average"
   threshold                 = var.minimum_health_hosts
   alarm_description         = "Unhealthy target group in ${data.aws_lb_target_group.target_group.name}"
@@ -16,10 +17,12 @@ resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
   ok_actions                = var.aws_sns_topic_arn
   insufficient_data_actions = var.aws_sns_topic_arn
   treat_missing_data        = "breaching"
+
   dimensions = {
     TargetGroup  = data.aws_lb_target_group.target_group.arn_suffix
     LoadBalancer = split("loadbalancer/", tolist(data.aws_lb_target_group.target_group.load_balancer_arns)[0])[1]
   }
+
   tags = merge(var.tags, {
     "TargetGroup" = data.aws_lb_target_group.target_group.name,
     "Terraform"   = "true"
@@ -29,17 +32,20 @@ resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
 resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
   alarm_name                = "ALB| ${data.aws_lb_target_group.target_group.name} | 4XX Error Rate"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 1
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
   threshold                 = var.error_rate_4XX_threshold
   alarm_description         = "4XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
   alarm_actions             = var.aws_sns_topic_arn
   ok_actions                = var.aws_sns_topic_arn
   insufficient_data_actions = var.aws_sns_topic_arn
-  treat_missing_data        = "notBreaching"
+  treat_missing_data        = "breaching"
+
   tags = merge(var.tags, {
     "TargetGroup" = data.aws_lb_target_group.target_group.name,
     "Terraform"   = "true"
   })
+
   metric_query {
     id          = "e1"
     expression  = "(FILL(m2,0))/FILL(m1,1)*100"
@@ -78,16 +84,19 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
     }
   }
 }
+
 resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
   alarm_name                = "ALB| ${data.aws_lb_target_group.target_group.name} | 5XX Error Rate"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 1
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
   threshold                 = var.error_rate_5XX_threshold
   alarm_description         = "5XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
   alarm_actions             = var.aws_sns_topic_arn
   ok_actions                = var.aws_sns_topic_arn
   insufficient_data_actions = var.aws_sns_topic_arn
-  treat_missing_data        = "notBreaching"
+  treat_missing_data        = "breaching"
+
   tags = merge(var.tags, {
     "TargetGroup" = data.aws_lb_target_group.target_group.name,
     "Terraform"   = "true"
