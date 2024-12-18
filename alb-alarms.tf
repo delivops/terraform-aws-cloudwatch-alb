@@ -14,9 +14,9 @@ resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
   statistic                 = "Average"
   threshold                 = var.minimum_health_hosts
   alarm_description         = "Unhealthy target group in ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
-  ok_actions                = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
-  insufficient_data_actions = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
+  alarm_actions             = concat(var.minimum_health_hosts_sns_arns, var.all_alarms_sns_arns)
+  ok_actions                = concat(var.minimum_health_hosts_sns_arns, var.all_alarms_sns_arns)
+  insufficient_data_actions = concat(var.minimum_health_hosts_sns_arns, var.all_alarms_sns_arns)
   treat_missing_data        = "breaching"
 
   dimensions = {
@@ -38,9 +38,9 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
   datapoints_to_alarm       = 8
   threshold                 = var.error_rate_4XX_threshold
   alarm_description         = "4XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
-  ok_actions                = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
-  insufficient_data_actions = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
+  alarm_actions             = concat(var.error_rate_4XX_sns_arns, var.all_alarms_sns_arns)
+  ok_actions                = concat(var.error_rate_4XX_sns_arns, var.all_alarms_sns_arns)
+  insufficient_data_actions = concat(var.error_rate_4XX_sns_arns, var.all_alarms_sns_arns)
   treat_missing_data        = "breaching"
 
   tags = merge(var.tags, {
@@ -95,9 +95,9 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
   datapoints_to_alarm       = 8
   threshold                 = var.error_rate_5XX_threshold
   alarm_description         = "5XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
-  ok_actions                = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
-  insufficient_data_actions = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
+  alarm_actions             = concat(var.error_rate_5XX_sns_arns, var.all_alarms_sns_arns)
+  ok_actions                = concat(var.error_rate_5XX_sns_arns, var.all_alarms_sns_arns)
+  insufficient_data_actions = concat(var.error_rate_5XX_sns_arns, var.all_alarms_sns_arns)
   treat_missing_data        = "breaching"
 
   tags = merge(var.tags, {

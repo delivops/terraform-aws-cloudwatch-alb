@@ -23,9 +23,9 @@ module "target_group_alerts" {
   tags = {
     Environment = "dev"
   }
-  minimum_health_hosts                 = 1
-  global_sns_topics_arns               = [aws_sns_topic.sns_topic.arn]
-  minimum_health_hosts_sns_topics_arns = [aws_sns_topic.sns_second_topic.arn]
-  error_rate_4XX_threshold             = 8.0
-  error_rate_5XX_threshold             = 8.0
+  minimum_health_hosts          = 1
+  all_alarms_sns_arns           = [aws_sns_topic.sns_topic.arn]
+  minimum_health_hosts_sns_arns = [aws_sns_topic.sns_second_topic.arn]
+  error_rate_4XX_threshold      = 8.0
+  error_rate_5XX_threshold      = 8.0
 }
