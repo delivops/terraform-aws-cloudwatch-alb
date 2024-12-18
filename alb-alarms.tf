@@ -3,6 +3,7 @@ data "aws_lb_target_group" "target_group" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
+  count                     = var.minimum_health_hosts_enabled ? 1 : 0
   alarm_name                = "ALB | Unhealthy Hosts (<${var.minimum_health_hosts}) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "LessThanThreshold"
   evaluation_periods        = 5
@@ -30,6 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
+  count                     = var.error_rate_4XX_enabled ? 1 : 0
   alarm_name                = "ALB | 4XX Error Rate (>${var.error_rate_4XX_threshold}%) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 12
@@ -86,6 +88,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
+  count                     = var.error_rate_5XX_enabled ? 1 : 0
   alarm_name                = "ALB | 5XX Error Rate (>${var.error_rate_5XX_threshold}%) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 12
