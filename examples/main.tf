@@ -8,7 +8,7 @@ resource "aws_sns_topic" "sns_topic" {
 }
 
 module "target_group_alerts" {
-  source = "delivops/cloudwatch-tg/aws"
+  source = "delivops/cloudwatch-alb/aws"
   #version            = "0.0.2"
 
   unique_tags = {

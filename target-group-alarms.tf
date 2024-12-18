@@ -3,19 +3,19 @@ data "aws_lb_target_group" "target_group" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
-  alarm_name                = "TG| ${data.aws_lb_target_group.target_group.name} | Unhealthy Hosts"
+  alarm_name                = "ALB | Unhealthy Hosts (<${var.minimum_health_hosts}) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "LessThanThreshold"
-  evaluation_periods        = 3
-  datapoints_to_alarm       = 3
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 4
   metric_name               = "HealthyHostCount"
   namespace                 = "AWS/ApplicationELB"
-  period                    = 600
+  period                    = 300
   statistic                 = "Average"
   threshold                 = var.minimum_health_hosts
   alarm_description         = "Unhealthy target group in ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = var.aws_sns_topic_arn
-  ok_actions                = var.aws_sns_topic_arn
-  insufficient_data_actions = var.aws_sns_topic_arn
+  alarm_actions             = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
+  ok_actions                = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
+  insufficient_data_actions = concat(var.minimum_health_hosts_sns_topics_arns, var.global_sns_topics_arns)
   treat_missing_data        = "breaching"
 
   dimensions = {
@@ -30,15 +30,15 @@ resource "aws_cloudwatch_metric_alarm" "health_host_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
-  alarm_name                = "ALB| ${data.aws_lb_target_group.target_group.name} | 4XX Error Rate"
+  alarm_name                = "ALB | 4XX Error Rate (>${var.error_rate_4XX_threshold}%) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 5
-  datapoints_to_alarm       = 5
+  evaluation_periods        = 12
+  datapoints_to_alarm       = 8
   threshold                 = var.error_rate_4XX_threshold
   alarm_description         = "4XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = var.aws_sns_topic_arn
-  ok_actions                = var.aws_sns_topic_arn
-  insufficient_data_actions = var.aws_sns_topic_arn
+  alarm_actions             = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
+  ok_actions                = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
+  insufficient_data_actions = concat(var.error_rate_4XX_sns_topics_arns, var.global_sns_topics_arns)
   treat_missing_data        = "breaching"
 
   tags = merge(var.tags, {
@@ -59,7 +59,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
     metric {
       metric_name = "RequestCount"
       namespace   = "AWS/ApplicationELB"
-      period      = 3600
+      period      = 300
       stat        = "Sum"
       unit        = "Count"
       dimensions = {
@@ -74,7 +74,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
     metric {
       metric_name = "HTTPCode_Target_4XX_Count"
       namespace   = "AWS/ApplicationELB"
-      period      = 3600
+      period      = 300
       stat        = "Sum"
       unit        = "Count"
       dimensions = {
@@ -86,15 +86,15 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_4xx_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
-  alarm_name                = "ALB| ${data.aws_lb_target_group.target_group.name} | 5XX Error Rate"
+  alarm_name                = "ALB | 5XX Error Rate (>${var.error_rate_5XX_threshold}%) | ${data.aws_lb_target_group.target_group.name}"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 5
-  datapoints_to_alarm       = 5
+  evaluation_periods        = 12
+  datapoints_to_alarm       = 8
   threshold                 = var.error_rate_5XX_threshold
   alarm_description         = "5XX Error rate monitoring for ${data.aws_lb_target_group.target_group.name}"
-  alarm_actions             = var.aws_sns_topic_arn
-  ok_actions                = var.aws_sns_topic_arn
-  insufficient_data_actions = var.aws_sns_topic_arn
+  alarm_actions             = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
+  ok_actions                = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
+  insufficient_data_actions = concat(var.error_rate_5XX_sns_topics_arns, var.global_sns_topics_arns)
   treat_missing_data        = "breaching"
 
   tags = merge(var.tags, {
@@ -114,7 +114,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
     metric {
       metric_name = "RequestCount"
       namespace   = "AWS/ApplicationELB"
-      period      = 3600
+      period      = 300
       stat        = "Sum"
       unit        = "Count"
       dimensions = {
@@ -129,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate_5xx_alarm" {
     metric {
       metric_name = "HTTPCode_Target_5XX_Count"
       namespace   = "AWS/ApplicationELB"
-      period      = 3600
+      period      = 300
       stat        = "Sum"
       unit        = "Count"
       dimensions = {
